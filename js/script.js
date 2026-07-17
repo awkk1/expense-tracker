@@ -155,6 +155,19 @@ function updateExpensesList() {
     renderExpenses(currentArray);
 }
 
+function saveExpenses() {
+    const arrayJSON = JSON.stringify(expenses);
+    localStorage.setItem("expenses", arrayJSON);
+}
+
+function loadExpenses() {
+    const savedExpenses = JSON.parse(localStorage.getItem("expenses"));
+
+    if (savedExpenses === null) return;
+
+    expenses.push(...savedExpenses);
+}
+
 formProduct.addEventListener('submit', (evt) => {
     evt.preventDefault();
 
@@ -164,6 +177,7 @@ formProduct.addEventListener('submit', (evt) => {
 
     formProduct.reset();
 
+    saveExpenses();
     updateExpensesList();
     updateStatistics();
 });
@@ -183,6 +197,7 @@ expensesList.addEventListener('click', (evt) => {
 
     expenses.splice(expenseIndex, 1);
 
+    saveExpenses();
     updateExpensesList();
     updateStatistics();
 });
@@ -195,5 +210,6 @@ selectFindExpense.addEventListener('change', () => {
     updateExpensesList();
 });
 
+loadExpenses();
 updateExpensesList();
 updateStatistics();
