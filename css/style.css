@@ -113,6 +113,8 @@ section {
 
     display: flex;
     flex-direction: column;
+
+    align-self: start;
 }
 
 .main-title {
@@ -265,4 +267,45 @@ section {
     font-family: "Inter", sans-serif;
     font-weight: 500;
     font-size: 24px;
+}
+
+.expense-icon {
+    display: block;
+    width: 45px;
+    height: 45px;
+    border: none;
+
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 75% 75%;
+}
+
+.expense-icon--food {
+    background-color: rgba(255, 115, 0, 0.2);
+    background-image: url(/assets/Food.svg);
+}
+
+.expense-icon--transport {
+    background-color: rgba(238, 244, 254, 1);
+    background-image: url(/assets/Transport.svg);
+}
+
+.expense-icon--entertainment {
+    background-color: rgba(253, 238, 245, 1);
+    background-image: url(/assets/Gamepad.svg);
+}
+
+.expense-icon--shopping {
+    background-color: rgba(239, 250, 242, 1);
+    background-image: url(/assets/shoppingBag.svg);
+}
+
+.expense-icon--health {
+    background-color: rgba(253, 241, 240, 1);
+    background-image: url(/assets/Heart.svg);
+}
+
+.expense-icon--other {
+    background-color: rgba(223, 224, 231, 1);
+    background-image: url(/assets/three-dot.svg);
 }

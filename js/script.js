@@ -50,7 +50,10 @@ function createExpenseCard(dataObject) {
     const deleteButton = document.createElement("button");
 
     li.classList.add("expense-item");
-    icon.classList.add("expense-icon");
+    icon.classList.add(
+        "expense-icon",
+        `expense-icon--${dataObject.category}`    
+    );
     expenseName.classList.add("expense-name");
     expenseCategory.classList.add("expense-category");
     cost.classList.add("expense-cost");
