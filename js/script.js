@@ -11,6 +11,10 @@ const moneySpendSpan = moneySpendBlock.querySelector(".spend-money");
 const countExpensesBlock = document.querySelector(".count-expenses");
 const countExpensesValue = countExpensesBlock.querySelector(".count-number");
 
+const findExpenseForm = document.querySelector(".find-expense");
+const inputFindExpense = findExpenseForm.querySelector(".find");
+const selectFindExpense = findExpenseForm.querySelector(".sort-expense");
+
 const categoryNames = {
     food: "Еда",
     transport: "Транспорт",
@@ -110,28 +114,57 @@ function createExpense() {
     };
 }
 
+function renderExpenses(dataArray) {
+    expensesList.innerHTML = "";
+
+    dataArray.forEach( expense => {
+        const card = createExpenseCard(expense);
+        expensesList.append(card);
+    });
+}
+
+function filterArray(array) {
+    const inputFindValue = inputFindExpense.value.trim().toLowerCase();
+
+    const filteredArray = array.filter((expense) => {
+        const expenseLower = expense.name.toLowerCase();
+        return expenseLower.includes(inputFindValue);
+    });
+
+    return filteredArray;
+}
+
+function sortExpense(array) {
+    const selectValue = selectFindExpense.value;
+
+    if (selectValue === "new") {
+        array.sort((a, b) => b.id - a.id);
+    } else {
+        array.sort((a, b) => a.id - b.id);
+    }
+}
+
 function updateStatistics() {
     updateAllExpenses();
     updateCountExpenses();
+}
+
+function updateExpensesList() {
+    const currentArray = filterArray(expenses);
+    sortExpense(currentArray);
+    renderExpenses(currentArray);
 }
 
 formProduct.addEventListener('submit', (evt) => {
     evt.preventDefault();
 
     const currentExpense = createExpense();
-
     if (!currentExpense) return;
-
     expenses.push(currentExpense);
-
-    const currentCard = createExpenseCard(currentExpense);
-
-    if (!currentCard) return;
-
-    expensesList.append(currentCard);
 
     formProduct.reset();
 
+    updateExpensesList();
     updateStatistics();
 });
 
@@ -146,13 +179,21 @@ expensesList.addEventListener('click', (evt) => {
         return object.id === cardId;
     });
 
-    if (exspenseIndex === -1) return;
+    if (expenseIndex === -1) return;
 
-    currentCard.remove();
+    expenses.splice(expenseIndex, 1);
 
-    expenses.splice(exspenseIndex, 1);
-
+    updateExpensesList();
     updateStatistics();
 });
 
-updateStatistics()
+inputFindExpense.addEventListener('input', () => {
+    updateExpensesList();
+});
+
+selectFindExpense.addEventListener('change', () => {
+    updateExpensesList();
+});
+
+updateExpensesList();
+updateStatistics();

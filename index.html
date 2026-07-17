@@ -79,25 +79,15 @@
                 <h2>Список расходов</h2>
 
                 <form class="find-expense">
-                    <input type="text" placeholder="Поиск по названию...">
+                    <input class="find" type="text" placeholder="Поиск по названию...">
 
-                    <select>
+                    <select class="sort-expense">
                         <option value="new">Сортировка: сначала новые</option>
                         <option value="old">Сортировка: сначала старые</option>
                     </select>
                 </form>
 
-                <ul class="expenses-list">
-                    <li class="expense-item" data-expense-cost="250">
-                        <span class="expense-icon"></span>
-                        <p class="expense-name">Кофе</p>
-                        <p class="expense-category">Еда</p>
-                        <span class="expense-cost">250 ₽</span>
-                        <p class="expense-date">4 июля 2026</p>
-                        <button class="expense-delete" type="button">X</button>
-                    </li>
-                </ul>
-
+                <ul class="expenses-list"></ul>
             </section>
         </div>
     </main>
