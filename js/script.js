@@ -1,3 +1,7 @@
+import { categoryNames, months } from "./data.js";
+import { saveExpenses, loadExpenses } from "./storage.js";
+import { updateStatistics } from "./statistics.js";
+
 const formProduct = document.querySelector(".add-expense");
 const inputNameProduct = formProduct.querySelector("#name");
 const inputCostProduct = formProduct.querySelector("#cost");
@@ -5,90 +9,51 @@ const selectCategoryProduct = formProduct.querySelector("#category");
 
 const expensesList = document.querySelector(".expenses-list");
 
-const moneySpendBlock = document.querySelector(".money-wrapper");
-const moneySpendSpan = moneySpendBlock.querySelector(".spend-money");
-
-const countExpensesBlock = document.querySelector(".count-expenses");
-const countExpensesValue = countExpensesBlock.querySelector(".count-number");
-
 const findExpenseForm = document.querySelector(".find-expense");
 const inputFindExpense = findExpenseForm.querySelector(".find");
 const selectFindExpense = findExpenseForm.querySelector(".sort-expense");
 
-const categoryNames = {
-    food: "Еда",
-    transport: "Транспорт",
-    entertainment: "Развлечения",
-    shopping: "Покупки",
-    health: "Здоровье",
-    other: "Другое",
-};
-
-const months = ["января",
-    "февраля",
-    "марта",
-    "апреля",
-    "мая",
-    "июня",
-    "июля",
-    "августа",
-    "сентября",
-    "октября",
-    "ноября",
-    "декабря"
-];
-
 const expenses = [];
 
 function createExpenseCard(dataObject) {
-    const li = document.createElement("li");
+    const { id, name, cost, category, date } = dataObject;
+
+    const expenseItem = document.createElement("li");
     const icon = document.createElement("span");
     const expenseName = document.createElement("p");
     const expenseCategory = document.createElement("p");
-    const cost = document.createElement("span");
+    const costSpan = document.createElement("span");
     const expenseDate = document.createElement("p");
     const deleteButton = document.createElement("button");
 
-    li.classList.add("expense-item");
+    expenseItem.classList.add("expense-item");
     icon.classList.add(
         "expense-icon",
-        `expense-icon--${dataObject.category}`    
+        `expense-icon--${category}`    
     );
     expenseName.classList.add("expense-name");
     expenseCategory.classList.add("expense-category");
-    cost.classList.add("expense-cost");
+    costSpan.classList.add("expense-cost");
     expenseDate.classList.add("expense-date");
     deleteButton.classList.add("expense-delete");
 
-    expenseName.textContent = dataObject.name;
+    expenseName.textContent = name;
 
-    cost.textContent = `${dataObject.cost.toLocaleString("ru-RU")} ₽`;
+    costSpan.textContent = `${cost.toLocaleString("ru-RU")} ₽`;
 
-    const selectedCategory = categoryNames[dataObject.category];
+    const selectedCategory = categoryNames[category];
 
     expenseCategory.textContent = selectedCategory;
 
-    expenseDate.textContent = dataObject.date;
+    expenseDate.textContent = date;
 
     deleteButton.type = "button";
     deleteButton.textContent = "X";
 
-    li.dataset.expenseId = dataObject.id;
-    li.append(icon, expenseName, expenseCategory, cost, expenseDate, deleteButton);
+    expenseItem.dataset.expenseId = id;
+    expenseItem.append(icon, expenseName, expenseCategory, costSpan, expenseDate, deleteButton);
 
-    return li;
-}
-
-function updateAllExpenses() {
-    const totalExpenses = expenses.reduce( (acc, object) => {
-        return acc + object.cost;
-    }, 0);
-    
-    moneySpendSpan.textContent = `${totalExpenses.toLocaleString("ru-RU")} ₽`;
-}
-
-function updateCountExpenses() {
-    countExpensesValue.textContent = expenses.length;
+    return expenseItem;
 }
 
 function createExpense() {
@@ -147,28 +112,10 @@ function sortExpense(array) {
     }
 }
 
-function updateStatistics() {
-    updateAllExpenses();
-    updateCountExpenses();
-}
-
 function updateExpensesList() {
     const currentArray = filterArray(expenses);
     sortExpense(currentArray);
     renderExpenses(currentArray);
-}
-
-function saveExpenses() {
-    const arrayJSON = JSON.stringify(expenses);
-    localStorage.setItem("expenses", arrayJSON);
-}
-
-function loadExpenses() {
-    const savedExpenses = JSON.parse(localStorage.getItem("expenses"));
-
-    if (savedExpenses === null) return;
-
-    expenses.push(...savedExpenses);
 }
 
 formProduct.addEventListener('submit', (evt) => {
@@ -180,9 +127,9 @@ formProduct.addEventListener('submit', (evt) => {
 
     formProduct.reset();
 
-    saveExpenses();
+    saveExpenses(expenses);
     updateExpensesList();
-    updateStatistics();
+    updateStatistics(expenses);
 });
 
 expensesList.addEventListener('click', (evt) => {
@@ -200,9 +147,9 @@ expensesList.addEventListener('click', (evt) => {
 
     expenses.splice(expenseIndex, 1);
 
-    saveExpenses();
+    saveExpenses(expenses);
     updateExpensesList();
-    updateStatistics();
+    updateStatistics(expenses);
 });
 
 inputFindExpense.addEventListener('input', () => {
@@ -213,6 +160,6 @@ selectFindExpense.addEventListener('change', () => {
     updateExpensesList();
 });
 
-loadExpenses();
+loadExpenses(expenses);
 updateExpensesList();
-updateStatistics();
+updateStatistics(expenses);
